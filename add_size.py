@@ -4,9 +4,9 @@ import openpyxl
 FILE = 'data/Корпоративная одежда.xlsx'
 
 GROUPS = {
-    'data/Корпоративная одежда З.xlsx': ['Автоколонна 1', 'Автоколонна 2', 'Автоколонна 3', 'Автоколонна 7'],
-    'data/Корпоративная одежда Лев.xlsx': ['Автоколонна 4', 'Автоколонна 5', 'Автоколонна 6'],
-    'data/Корпоративная одежда Зап.xlsx': ['Автоколонна 8', 'Автоколонна 9', 'Автоколонна 10', 'Автоколонна 11'],
+    'data/Корпоративная одежда Зел.xlsx': ['Автоколонна 1', 'Автоколонна 2', 'Автоколонна 3', 'Автоколонна 7'],
+    'data/Корпоративная одежда Левобережная.xlsx': ['Автоколонна 4', 'Автоколонна 5', 'Автоколонна 6'],
+    'data/Корпоративная одежда Западный.xlsx': ['Автоколонна 8', 'Автоколонна 9', 'Автоколонна 10', 'Автоколонна 11'],
 
 }
 
@@ -30,21 +30,21 @@ class Sizes:
         sheet_obj = wb_obj[self.sheet]
         self.data = {}
         for tab_num in range(self.start, sheet_obj.max_row + 1):
-            group = sheet_obj.cell(row=tab_num, column=self.group_coll).value
-            if group in GROUPS[file]:
-                tab = sheet_obj.cell(row=tab_num, column=self.tab_coll).value
-                height = sheet_obj.cell(row=tab_num, column=self.height_coll).value
-                breast = sheet_obj.cell(row=tab_num, column=self.breast_coll).value
-                hips = sheet_obj.cell(row=tab_num, column=self.hips_coll).value
-                waist = sheet_obj.cell(row=tab_num, column=self.waist_coll).value
-                size = sheet_obj.cell(row=tab_num, column=self.size_coll).value
-                self.data[tab] = {
-                    'height': height if height else None,
-                    'breast': breast if breast else None,
-                    'hips': hips if hips else None,
-                    'waist': waist if waist else None,
-                    'size': size if size else None,
-                                  }
+            # group = sheet_obj.cell(row=tab_num, column=self.group_coll).value
+            # if group in GROUPS[file]:
+            tab = sheet_obj.cell(row=tab_num, column=self.tab_coll).value
+            height = sheet_obj.cell(row=tab_num, column=self.height_coll).value
+            breast = sheet_obj.cell(row=tab_num, column=self.breast_coll).value
+            hips = sheet_obj.cell(row=tab_num, column=self.hips_coll).value
+            waist = sheet_obj.cell(row=tab_num, column=self.waist_coll).value
+            size = sheet_obj.cell(row=tab_num, column=self.size_coll).value
+            self.data[tab] = {
+                'height': height if height else None,
+                'breast': breast if breast else None,
+                'hips': hips if hips else None,
+                'waist': waist if waist else None,
+                'size': size if size else None,
+                              }
 
 
 
@@ -107,27 +107,6 @@ class WomanSizes(Sizes):
         self.size_coll = 9
         self.sheet = 'Женский комплект'
 
-mans = ManSizes()
-womans = WomanSizes()
-
-mans.get_data(file='data/Корпоративная одежда З.xlsx')
-mans.set_data()
-
-womans.get_data(file='data/Корпоративная одежда З.xlsx')
-womans.set_data()
-
-mans.get_data(file='data/Корпоративная одежда Зап.xlsx')
-mans.set_data()
-
-womans.get_data(file='data/Корпоративная одежда Зап.xlsx')
-womans.set_data()
-#
-#
-mans.get_data(file='data/Корпоративная одежда Лев.xlsx')
-mans.set_data()
-
-womans.get_data(file='data/Корпоративная одежда Лев.xlsx')
-womans.set_data()
 
 
 # def sync(file, file_make):

@@ -1,5 +1,7 @@
 import pandas as pd
 import openpyxl
+from add_size import ManSizes, WomanSizes
+import os
 
 FILENAME = 'data/Корпоративная одежда.xlsx'
 
@@ -216,10 +218,22 @@ def get_tab_id() -> dict:
                 'clothes': {},
             }
         # if tabs.get(19009685):
+        # if tabs.get(19009685):
         #     x = tabs[19009685]
         #     print()
 
     return tabs
+
+
+def add_sizes():
+    mans = ManSizes()
+    womans = WomanSizes()
+
+    mans.get_data(file='data/Корпоративная одежда старая.xlsx')
+    mans.set_data()
+
+    womans.get_data(file='data/Корпоративная одежда старая.xlsx')
+    womans.set_data()
 
 
 tabs = dict(sorted(get_tab_id().items()))
@@ -232,6 +246,8 @@ cloths_woman = clothes({
 
 set_data_mans(cloths_men)
 set_data_woman(cloths_woman)
+
+add_sizes()
 
 
 #TODO
