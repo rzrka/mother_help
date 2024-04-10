@@ -107,7 +107,7 @@ def set_data_woman(tabs):
         'Рубашка с коротким рукавом парадная белого цвета': [24],
         'Брюки летние': (25, ),
         'Юбка летняя': (26, ),
-        'Рубашка поло': (27, )
+        'Рубашка поло': (27, 28)
     }
     wb_obj = openpyxl.load_workbook(FILENAME)
     sheet_obj = wb_obj['Женский комплект']
@@ -130,8 +130,6 @@ def set_data(cells, sheet, tabs):
 
     i = 6
     for tab in tabs:
-        # if tab == 19009685:
-        #     print()
         for j in (range(min_cell, max_cell + 1)):
             cell_obj = sheet.cell(row=i, column=j)
             cell_obj.value = 'не выдано'
@@ -178,7 +176,7 @@ def set_data_mans(tabs):
         'Рубашка с коротким рукавом повседневная голубого цвета': (20, 21),
         'Рубашка с коротким рукавом парадная белого цвета': [22],
         'Брюки летние': (23,),
-        'Рубашка поло': [24],
+        'Рубашка поло': [24, 25],
     }
     wb_obj = openpyxl.load_workbook('data/Шаблон Корпоративная одежда.xlsx')
     sheet_obj = wb_obj['Мужской комплект']
@@ -217,16 +215,12 @@ def get_tab_id() -> dict:
                 'ogre': sheet_obj.cell(row=tab_num, column=orge_coll).value,
                 'clothes': {},
             }
-        # if tabs.get(19009685):
-        # if tabs.get(19009685):
-        #     x = tabs[19009685]
-        #     print()
 
     return tabs
 
 
 def add_sizes():
-    mans = ManSizes()
+    mans = ManSizes()   
     womans = WomanSizes()
 
     mans.get_data(file='data/Корпоративная одежда старая.xlsx')
@@ -234,8 +228,10 @@ def add_sizes():
 
     womans.get_data(file='data/Корпоративная одежда старая.xlsx')
     womans.set_data()
-
-
+try:
+    os.remove('data/Корпоративная одежда.xlsx')
+except FileNotFoundError:
+    pass
 tabs = dict(sorted(get_tab_id().items()))
 cloths_men = clothes({
     key: value for key, value in tabs.items() if value['sex'].upper() == 'мужской'.upper()
@@ -250,6 +246,11 @@ set_data_woman(cloths_woman)
 add_sizes()
 
 
+
+# try:
+#     os.remove('data/Корпоративная одежда старая.xlsx')
+# except FileNotFoundError:
+#     pass
 #TODO
 '''
 1. не корректное чтение файла бугалтерии
