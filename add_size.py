@@ -22,6 +22,7 @@ class Sizes:
         self.hips_coll = None
         self.waist_coll = None
         self.size_coll = None
+        self.size_shoes = None
         self.data = {}
         self.sheet = None
 
@@ -38,12 +39,14 @@ class Sizes:
             hips = sheet_obj.cell(row=tab_num, column=self.hips_coll).value
             waist = sheet_obj.cell(row=tab_num, column=self.waist_coll).value
             size = sheet_obj.cell(row=tab_num, column=self.size_coll).value
+            size_shoes = sheet_obj.cell(row=tab_num, column=self.size_shoes).value
             self.data[tab] = {
                 'height': height if height else None,
                 'breast': breast if breast else None,
                 'hips': hips if hips else None,
                 'waist': waist if waist else None,
                 'size': size if size else None,
+                'size_shoes': size_shoes if size_shoes else None,
                               }
 
 
@@ -75,6 +78,10 @@ class Sizes:
                     size = sheet_obj.cell(row=row, column=self.size_coll)
                     size.value = people['size']
 
+                if people['size_shoes']:
+                    size_shoes = sheet_obj.cell(row=row, column=self.size_shoes)
+                    size_shoes.value = people['size_shoes']
+
         wb_obj.save(file)
 
 
@@ -91,6 +98,7 @@ class ManSizes(Sizes):
         self.hips_coll = 7
         self.waist_coll = 8
         self.size_coll = 9
+        self.size_shoes = 10
         self.sheet = 'Мужской комплект'
 
 
@@ -105,6 +113,7 @@ class WomanSizes(Sizes):
         self.hips_coll = 7
         self.waist_coll = 8
         self.size_coll = 9
+        self.size_shoes = 10
         self.sheet = 'Женский комплект'
 
 
