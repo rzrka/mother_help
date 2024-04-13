@@ -1,7 +1,7 @@
 import openpyxl
 
 
-FILE = 'data/Корпоративная одежда.xlsx'
+FILE = 'data/Корпоративная одежда ФЗ.xlsx'
 
 GROUPS = {
     'data/Корпоративная одежда Зел.xlsx': ['Автоколонна 1', 'Автоколонна 2', 'Автоколонна 3', 'Автоколонна 7'],
@@ -14,7 +14,7 @@ GROUPS = {
 class Sizes:
 
     def __init__(self):
-        self.start = None
+        self.start = 3
         self.tab_coll = None
         self.group_coll = 2
         self.height_coll = None
@@ -91,7 +91,6 @@ class ManSizes(Sizes):
 
     def __init__(self):
         super().__init__()
-        self.start = 6
         self.tab_coll = 1
         self.height_coll = 5
         self.breast_coll = 6
@@ -106,7 +105,6 @@ class WomanSizes(Sizes):
 
     def __init__(self):
         super().__init__()
-        self.start = 6
         self.tab_coll = 1
         self.height_coll = 5
         self.breast_coll = 6
