@@ -8,78 +8,76 @@ FILENAME = 'data/Корпоративная одежда ФЗ.xlsx'
 
 TYPE_CLOTHES_EXCLUDED = 'перчатки|сиг|Полукомб|Галстук|Фуражка|Рукавицы|Ботинки|Пиджак'.lower()
 
-TYPE_CLOTHES = {('поло',): 'Рубашка поло',
+TYPE_CLOTHES = {('поло',): ['Рубашка поло'],
                 ('руб',):
                   {
-                       ('д/р', 'дл.ру', 'дл/р'):
+                       ('д/р', 'дл.р', 'дл/р', 'длинн', 'др', 'длру'):
                            {('повседневаная', 'пов', 'гол'):
-                                'Рубашка с длинным рукавом повседневная голубого цвета',
+                                ['Рубашка с длинным рукавом повседневная голубого цвета'],
                            ('пар', 'бел'):
-                                'Рубашка с длинным рукавом парадная белого цвета',
-                           ('руб', ):
-                                'Рубашка с длинным рукавом повседневная голубого цвета',
+                                ['Рубашка с длинным рукавом парадная белого цвета'],
                            },
-                       ('к/р', 'кор.рук', 'кор.т.с.', 'кор.с.р', 'кор.р', 'к/рук'):
+                       ('к/р', 'кор.рук', 'кор.т.с.', 'кор.с.р', 'кор.р', 'к/рук', 'ско'):
                            {('повседневаная', 'пов', 'гол'):
-                                'Рубашка с коротким рукавом повседневная голубого цвета',
+                                ['Рубашка с коротким рукавом повседневная голубого цвета'],
                            ('пар', 'бел'):
-                                'Рубашка с коротким рукавом парадная белого цвета',
-                           ('руб', ):
-                                'Рубашка с коротким рукавом повседневная голубого цвета'
+                                ['Рубашка с коротким рукавом парадная белого цвета'],
                            },
-                       ('руб',):
-                           {('повседневаная', 'пов', 'гол'):
-                                'Рубашка с коротким рукавом повседневная голубого цвета',
-                            ('пар', 'бел'):
-                                'Рубашка с коротким рукавом парадная белого цвета',
-                            ('руб',):
-                                'Рубашка с коротким рукавом повседневная голубого цвета'
-                            },
                    },
                   ('брюки',):
                       {('лет',):
-                           'Брюки летние',
+                           ['Брюки летние'],
                        ('дем'):
-                            'Брюки демисезонные',
+                            ['Брюки демисезонные'],
                       },
-                  ('Джемпер',): 'Джемпер трикотажный',
+                  ('Джемпер', 'кардиган'): ['Джемпер трикотажный', 'Кардиган трикотажный'],
                   ('куртка',):
                     {
-                        ('вет',): 'Куртка ветровка',
-                        ('зим',): 'Куртка зимняя'
+                        ('вет',): ['Куртка ветровка'],
+                        ('зим',): ['Куртка зимняя']
                     },
-                  ('вет',): 'Куртка ветровка',
-                ('Шапка', 'убор', 'голов', 'форменная'): 'головной убор зимний (трикотажная шапка)',
-                    # {
-                    #     ('трикотаж','зим',): 'головной убор зимний (трикотажная шапка)',
-                    # },
+                  ('вет',): ['Куртка ветровка'],
+                ('Шапка', 'убор', 'голов', 'форменная'): ['головной убор зимний (трикотажная шапка)'],
                 ('Жилет',):
                     {
-                        ('утепленный', 'утеп', ): 'Жилет утепленный',
+                        ('утепленный', 'утеп', ): ['Жилет утепленный'],
                     },
                 ('юбка',):
                     {
-                        ('дем',): 'Юбка демисезонная',
-                        ('лет',): 'Юбка летняя',
+                        ('дем',): ['Юбка демисезонная'],
+                        ('лет',): ['Юбка летняя'],
                     },
-                ('платок',): 'Платок (шейный) или галстук-бант',
-                ('кардиган',): 'Кардиган трикотажный',
+                ('платок',): ['Платок (шейный) или галстук-бант'],
               }
 
+
+#Дефолтные типы одежды, если впервом словаре не нашлось то выставляется дефолтное значение по втором словарю
+TYPE_CLOTHES_DEFAULT = {
+        ('руб',):
+               {('повседневаная', 'пов', 'гол'):
+                    ['Рубашка с коротким рукавом повседневная голубого цвета'],
+                ('пар', 'бел'):
+                    ['Рубашка с коротким рукавом парадная белого цвета'],
+                ('руб',):
+                    ['Рубашка с коротким рукавом повседневная голубого цвета']
+                },
+
+}
 
 def search_clothes(cloth, iter_clothes=TYPE_CLOTHES):
     for type_cloth in iter_clothes:
         for el in type_cloth:
             if el.lower() in cloth.replace(' ', '').lower():
                 iter_clothes = iter_clothes[type_cloth]
-                if type(iter_clothes) is str:
+                if type(iter_clothes) is list:
                     return iter_clothes
                 else:
                     return search_clothes(cloth, iter_clothes)
 
-def write_without_dict_clothes(cloth):
+def write_without_dict_clothes(tab_id, cloth):
     with open('Одежды который нет в словаре.txt', 'a') as f:
-        f.write(cloth + '\n')
+        if not re.findall(TYPE_CLOTHES_EXCLUDED, cloth.replace(' ', '').lower()):
+            f.write(f'{tab_id} -- {cloth}\n')
 
 def clothes(tabs):
     '''
@@ -97,18 +95,21 @@ def clothes(tabs):
     for tab_el, cloth, date, c in zip(tab_id, cloths, dates, cnt):
         # проверяем только те табельные номера которые мы выбрали из файла с водителями
         if tab_el in tabs:
-            re_cloth = search_clothes(cloth)
-            if re_cloth:
+            re_clothes = search_clothes(cloth)
+            if not re_clothes:
+                re_clothes = search_clothes(cloth, TYPE_CLOTHES_DEFAULT)
+                write_without_dict_clothes(tab_el, cloth)
+            if re_clothes:
                 for _ in range(c):
-                    if tabs[tab_el]['clothes'].get(re_cloth):
-                        tabs[tab_el]['clothes'][re_cloth]['date'].append(date.strftime('%d-%m-%Y'))
-                    else:
-                        tabs[tab_el]['clothes'][re_cloth] = {
-                            'date': [date.strftime('%d-%m-%Y')],
-                        }
+                    for re_cloth in re_clothes:
+                        if tabs[tab_el]['clothes'].get(re_cloth):
+                            tabs[tab_el]['clothes'][re_cloth]['date'].append(date.strftime('%d-%m-%Y'))
+                        else:
+                            tabs[tab_el]['clothes'][re_cloth] = {
+                                'date': [date.strftime('%d-%m-%Y')],
+                            }
             else:
-                if not re.findall(TYPE_CLOTHES_EXCLUDED, cloth.replace(' ', '').lower()):
-                    write_without_dict_clothes(cloth)
+                write_without_dict_clothes(tab_el, cloth)
 
     return tabs
 
@@ -228,7 +229,8 @@ def get_tab_id() -> dict:
     for tab_num in range(start, sheet_obj.max_row + 1):
         type_people = sheet_obj.cell(row=tab_num, column=type_people_coll).value
         if SETTINGS['type_people'] in type_people:
-            tabs[int(sheet_obj.cell(row=tab_num, column=tab_coll).value)] = {
+            id = int(sheet_obj.cell(row=tab_num, column=tab_coll).value)
+            tabs[id] = {
                 'sex': sheet_obj.cell(row=tab_num, column=sex_coll).value.upper(),
                 'surname': sheet_obj.cell(row=tab_num, column=surname_coll).value,
                 'recr_date': sheet_obj.cell(row=tab_num, column=recr_date_coll).value.strftime('%d-%m-%Y'),
@@ -255,6 +257,7 @@ try:
 except FileNotFoundError:
     pass
 tabs = dict(sorted(get_tab_id().items()))
+
 cloths_men = clothes({
     key: value for key, value in tabs.items() if value['sex'].upper() == 'мужской'.upper()
 })
